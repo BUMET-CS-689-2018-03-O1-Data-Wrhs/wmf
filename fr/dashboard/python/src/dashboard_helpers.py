@@ -31,7 +31,7 @@ class Test(object):
 
 
     def get_clean_donations(self, donations):
-        clean_donations =  donations[np.abs(donations.amount-donations.amount.mean()) <= (3*donations.amount.std())]
+        clean_donations =  donations[np.abs(donations.amount-donations.amount.mean()) <= (4*donations.amount.std())]
         return clean_donations
     def combine(self, names, combination_name):
 
@@ -95,9 +95,9 @@ class Test(object):
 
         # Step through metrics and compute them for each banner
 
-        # hive data can gives stats on how much traffic was allocated to a banner
-        if self.hive: 
-            d['traffic'] = [self.data[name]['traffic']['count'].sum() for name in names]
+        # hive data can give stats on how much traffic was allocated to a banner
+        #if self.hive: 
+        #    d['traffic'] = [self.data[name]['traffic']['count'].sum() for name in names]
 
         d['impressions'] = [self.data[name]['impressions']['count'].sum() for name in names]
         d['clicks'] = [self.data[name]['clicks'].shape[0] for name in names]
@@ -138,8 +138,8 @@ class Test(object):
         'avg_ro']
 
         # put hive traffic data into df if available
-        if self.hive:
-            column_order.insert(1, 'traffic')
+        #if self.hive:
+        #    column_order.insert(1, 'traffic')
         d = d[column_order]
 
         return d.sort()
@@ -389,6 +389,8 @@ class Test(object):
         a_cntr = Counter(np.floor(self.data[a]['donations']['amount']))
         b_cntr = Counter(np.floor(self.data[b]['donations']['amount']))
 
+        print a_cntr
+
         keys = [int(s) for s in set(a_cntr.keys()).union(b_cntr.keys())]
         keys.sort()
 
@@ -462,7 +464,7 @@ class Test(object):
         return int(samples_per_branch_calculator(rate, mde=mde, alpha=alpha, power=power))
 
 
-    def amount_stats(self, a, b, conf=95, rate='donations/impressions', remove_outliers=True):
+    def classic_amount_stats(self, a, b, conf=95, rate='donations/impressions', remove_outliers=True):
 
         """
         Gives a confidence for difference in the dollars per 1000 impressions between banners a, b 
@@ -509,6 +511,48 @@ class Test(object):
             print "incorrect test argument"
             return
 
+
+
+    def amount_stats(self, values, conf=95, rate='donations/impressions', plot = True):
+
+        """
+        Gives a confidence for difference in the dollars per 1000 impressions between banners a, b 
+
+        values: a dictionary mapping from banner names to a cut-off point for most frequent donation amounts for that banner
+        conf: confidence level in [0, 100] for the confidence intervals.
+        rate: there are two kinds of rates this function can handle:
+            'donations/impressions': 
+            'donations/clicks': donations per click
+        remove_outliers: remove donations exceeding 3 standard deviations from the mean
+        """
+
+        t = rate.split('/')
+        trial_type = t[1]
+
+
+        d = {}
+        for name in values:
+            num_donations = self.data[name]['donations']['amount'].shape[0]
+            counts = self.data[name]['donations']['amount'].value_counts()
+            counts.order()
+            counts = counts.iloc[:values[name]]
+
+            print 'Values for banner ', name, ':', list(counts.index)
+
+
+            if trial_type == 'clicks':
+                num_0s = int(self.data[name]['clicks'].shape[0]) - num_donations
+            elif trial_type == 'impressions':
+                num_0s = int(self.data[name]['impressions'].sum()) - num_donations
+            else:
+                print "incorrect test argument"
+                return
+
+            counts =  counts.set_value(0.0, num_0s)
+            d[name] =  get_multinomial_expectation_dist(counts)
+        return print_stats(pd.DataFrame.from_dict(d), conf, plot)
+
+
     
     def rate_stats(self, *args, ** kwargs):
 
@@ -544,26 +588,44 @@ class Test(object):
             names = args
 
         if rate == 'donations/impressions':
-            d = pd.DataFrame.from_dict({name:get_beta_dist(self.data[name]['donations'].shape[0], self.data[name]['impressions'].sum()) for name in names})
-            return print_rate_stats(d, conf, plot)
+            d = {}
+            for name in names:
+                num_heads = int(self.data[name]['donations'].shape[0])
+                num_tails = int(self.data[name]['impressions'].sum() - num_heads)
+                counts = pd.Series([num_tails , num_heads ], index = [0.0, 1.0])
+                d[name] = get_multinomial_expectation_dist(counts)
+            return print_stats(pd.DataFrame.from_dict(d), conf, plot)
 
         elif rate == 'clicks/impressions':
-            d = pd.DataFrame.from_dict({name:get_beta_dist(self.data[name]['clicks'].shape[0], self.data[name]['impressions'].sum()) for name in names})
-            return print_rate_stats(d, conf, plot)
+            d = {}
+            for name in names:
+                num_heads = int(self.data[name]['clicks'].shape[0])
+                num_tails = int(self.data[name]['impressions'].sum() - num_heads)
+                counts = pd.Series([num_tails , num_heads ], index = [0.0, 1.0])
+                d[name] = get_multinomial_expectation_dist(counts)
+            return print_stats(pd.DataFrame.from_dict(d), conf, plot)
 
+            
         elif rate == 'donations/clicks':
-            d = pd.DataFrame.from_dict({name:get_beta_dist(self.data[name]['donations'].shape[0], self.data[name]['clicks'].shape[0]) for name in names})
-            return print_rate_stats(d, conf, plot)
-        
 
-def print_rate_stats(dists, conf, plot):
+            d = {}
+            for name in names:
+                num_heads = int(self.data[name]['donations'].shape[0])
+                num_tails = int(self.data[name]['clicks'].shape[0] - num_heads)
+                counts = pd.Series([num_tails , num_heads ], index = [0.0, 1.0])
+                d[name] = get_multinomial_expectation_dist(counts)
+            return print_stats(pd.DataFrame.from_dict(d), conf, plot)
+
+
+
+def print_stats(dists, conf, plot):
 
     """
     Helper function to create a pandas datframe with rate statistics
     """
 
     if plot:
-        plot_rate_dist(dists)
+        plot_dist(dists)
     result_df = pd.DataFrame()
 
     def f(d):
@@ -589,7 +651,7 @@ def print_rate_stats(dists, conf, plot):
     
 
 
-def plot_rate_dist(dists):
+def plot_dist(dists):
     """
     Helper function to plot the probability distribution over
     the donation rates (bayesian formalism)

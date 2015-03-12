@@ -105,7 +105,7 @@ def get_impressions(start, stop, country_id = None):
     return d.sort()
 
 
-def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = False, cum = False, normalize = False, ylabel = '', interactive = False, index = None):
+def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = False, cum = False, normalize = False, ylabel = '', interactive = False, index = None, rotate=False):
     
     d = d[start:stop]
 
@@ -131,7 +131,7 @@ def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = Fal
 
     d_plot = d_plot.fillna(0)
     #d_plot.plot(figsize=(10, 4))
-    return plot_df(d_plot, ylabel, interactive = interactive)
+    return plot_df(d_plot, ylabel, interactive = interactive, rotate=rotate)
 
 
 

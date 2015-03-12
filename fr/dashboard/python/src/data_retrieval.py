@@ -22,7 +22,7 @@ def query_lutetium_robust(query, params):
     # so use ssh to query. This is not thread safe and absolutely rediculous
     # 
     except:
-        print "using old method"
+        print "fetching data via ssh"
         ssh_params = copy.copy(params)
         for k, v in ssh_params.iteritems():
             if isinstance(v, basestring):
@@ -149,7 +149,7 @@ class HiveBannerDataRetriever(BannerDataRetriever):
         query = """
         SELECT 
         sum(n) as count, minute as timestamp, result, reason, spider
-        FROM ellery.impressions 
+        FROM ellery.oozie_impressions_v0_1 
         WHERE banner = '%(banner)s'
         AND minute BETWEEN '%(start)s' AND '%(stop)s' 
         AND year BETWEEN %(start_year)s AND %(stop_year)s \n
