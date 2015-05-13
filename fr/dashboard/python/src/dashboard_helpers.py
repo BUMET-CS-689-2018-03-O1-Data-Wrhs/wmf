@@ -3,7 +3,7 @@ import numpy as np
 from collections import Counter
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
-from data_retrieval import get_banner_data, HiveBannerDataRetriever, OldBannerDataRetriever
+from .data_retrieval import get_banner_data, HiveBannerDataRetriever, OldBannerDataRetriever
 from datetime import timedelta
 from stats_utils import *
 
@@ -42,11 +42,11 @@ class Test(object):
         """
 
         if combination_name in self.names:
-            print "The combination_name is already in use"
+            print ("The combination_name is already in use")
             return
 
         if len(set(names).difference(self.names)) != 0:
-            print "One of the banners is not known to the test object"
+            print ("One of the banners is not known to the test object")
             return
 
         #reduce set to be unique
@@ -200,7 +200,8 @@ class Test(object):
 
 
         df = pd.concat(ds)
-        df.index = pd.MultiIndex.from_tuples(zip(df['name'], df.index))
+
+        df.index = pd.MultiIndex.from_tuples(list(zip(df['name'], df.index)))
         del df['name']
         df = df.sort()
 
@@ -217,7 +218,7 @@ class Test(object):
         """
 
         if not self.hive:
-            print "Test object needs to be instantiated with keyword argument hive=True"
+            print ("Test object needs to be instantiated with keyword argument hive=True")
             return
 
         # set up list of banner to process
@@ -389,7 +390,7 @@ class Test(object):
         a_cntr = Counter(np.floor(self.data[a]['donations']['amount']))
         b_cntr = Counter(np.floor(self.data[b]['donations']['amount']))
 
-        print a_cntr
+        print (a_cntr)
 
         keys = [int(s) for s in set(a_cntr.keys()).union(b_cntr.keys())]
         keys.sort()
@@ -499,16 +500,16 @@ class Test(object):
             a_num_trials = self.data[a]['clicks'].shape[0]
             b_num_trials = self.data[b]['clicks'].shape[0]
             amount_ci = difference_in_means_confidence_interval(a_event_values, a_num_trials, b_event_values, b_num_trials, alpha=(100 - conf)/200.0)
-            print "%s gives between $%0.4f and $%0.4f more $/clicks than %s" %(a, amount_ci[0], amount_ci[1], b)
+            print ("%s gives between $%0.4f and $%0.4f more $/clicks than %s" %(a, amount_ci[0], amount_ci[1], b))
 
         elif trial_type == 'impressions':
             a_num_trials = self.data[a]['impressions'].sum()
             b_num_trials = self.data[b]['impressions'].sum()
             amount_ci = difference_in_means_confidence_interval(a_event_values, a_num_trials, b_event_values, b_num_trials, alpha=(100 - conf)/200.0)
-            print "%s gives between $%0.4f and $%0.4f more $/1000 impressions than %s" %(a, 1000*amount_ci[0], 1000*amount_ci[1], b)
+            print ("%s gives between $%0.4f and $%0.4f more $/1000 impressions than %s" %(a, 1000*amount_ci[0], 1000*amount_ci[1], b))
 
         else:
-            print "incorrect test argument"
+            print ("incorrect test argument")
             return
 
 
@@ -537,7 +538,7 @@ class Test(object):
             counts.order()
             counts = counts.iloc[:values[name]]
 
-            print 'Values for banner ', name, ':', list(counts.index)
+            print ('Values for banner ', name, ':', list(counts.index))
 
 
             if trial_type == 'clicks':
@@ -545,7 +546,7 @@ class Test(object):
             elif trial_type == 'impressions':
                 num_0s = int(self.data[name]['impressions'].sum()) - num_donations
             else:
-                print "incorrect test argument"
+                print ("incorrect test argument")
                 return
 
             counts =  counts.set_value(0.0, num_0s)
@@ -668,7 +669,7 @@ def plot_dist(dists):
 
 def custom_amount_stats(a_event_values, a_num_trials, b_event_values, b_num_trials, conf =95):
     amount_ci = difference_in_means_confidence_interval(a_event_values, a_num_trials, b_event_values, b_num_trials, alpha = (100 - conf)/200.0)
-    print "A gives between $%0.4f and $%0.4f more $/clicks than B" %(amount_ci[0], amount_ci[1])
+    print ("A gives between $%0.4f and $%0.4f more $/clicks than B" %(amount_ci[0], amount_ci[1]))
 
 
 def custom_rate_stats(a_num_events, a_num_trials, b_num_events, b_num_trials, conf=95, plot =True):

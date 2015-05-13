@@ -27,9 +27,7 @@ def get_clicks(start, stop, campaign = '.*'):
     GROUP BY DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H'),  CONCAT_WS(' ', banner, utm_campaign)
     """
     
-    print query % params
     d = query_lutetium(query, params)
-    print d.head()
     d.index = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
     del d['timestamp']
     
@@ -63,14 +61,15 @@ def get_donations(start, stop, campaign = '.*'):
     GROUP BY DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H'),  CONCAT_WS(' ', banner, utm_campaign)
     """
     
-    print query % params
     d = query_lutetium(query, params)
-    print d.head()
     d.index = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
     del d['timestamp']
     d['amount'] = d['amount'].fillna(0.0)
     d['amount'] = d['amount'].astype(float)
-    
+    try:
+        d['name'] = d['name'].apply(lambda x: x.decode('utf-8'))
+    except:
+        pass
     return d.sort()
 
 
@@ -100,6 +99,11 @@ def get_impressions(start, stop, country_id = None):
     d.index = d['dt'].map(lambda t: pd.to_datetime(str(t)))
     del d['dt']
     d['n'] = d['n'].astype(int)
+    try:
+        d['name'] = d['name'].apply(lambda x: x.decode('utf-8'))
+    except:
+        pass
+
     
     
     return d.sort()
