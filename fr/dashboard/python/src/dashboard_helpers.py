@@ -661,7 +661,7 @@ def plot_dist(dists):
 
     bins = 50
     for name in dists.columns:
-        ax.hist(dists[name], bins=bins, alpha=0.6, label=name)
+        ax.hist(dists[name], bins=bins, alpha=0.6, label=name, normed=True)
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     
 

@@ -11,7 +11,7 @@ from abc import ABCMeta, abstractmethod
 from db_utils import *
 import hashlib
 import copy
-
+import traceback
 
 
 def query_lutetium_robust(query, params):
@@ -23,7 +23,7 @@ def query_lutetium_robust(query, params):
     except:
         print ("fetching data via ssh")
         ssh_params = copy.copy(params)
-        for k, v in ssh_params.iteritems():
+        for k, v in ssh_params.items():
             if isinstance(v, basestring):
                 ssh_params[k] = "'" + v + "'"
         query = query % ssh_params
@@ -81,13 +81,30 @@ class BannerDataRetriever(object):
         ORDER BY ct.ts; 
         """
 
+        #OLD Query is Back
+        query = """
+        SELECT
+        ct.ts as timestamp, 
+        CAST(ct.utm_key as int) as impressions_seen, 
+        ct.utm_source 
+        FROM drupal.contribution_tracking ct
+        WHERE SUBSTRING_INDEX(ct.utm_source, '.', 1) = %(banner)s
+        AND ct.ts BETWEEN %(start_ts)s AND %(stop_ts)s
+        AND ct.utm_medium = 'sitenotice'
+        ORDER BY ct.ts; 
+        """
 
         d = query_lutetium_robust(query, self.params)
         d.index  = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
         del d['timestamp']
         d['impressions_seen'] = d['impressions_seen'].fillna(-1)
         d['impressions_seen'] = d['impressions_seen'].astype(int)
-        d['payment_method'] = d['payment_method'].apply(lambda x: x.decode('utf-8'))
+        try:
+            #d['utm_source'] = d['utm_source'].apply(lambda x: x.decode('utf-8'))
+            d['payment_method'] = d['utm_source'].apply(lambda x: x.split('.')[2])
+        except:
+            print(traceback.format_exc())
+            print("error decoding payment method")
 
 
         return d
@@ -114,7 +131,7 @@ class BannerDataRetriever(object):
         co.total_amount as amount, 
         ct.ts as timestamp, 
         CAST(ct.utm_key as int) as impressions_seen, 
-        SUBSTRING_INDEX(ct.utm_source, '.', -1) as payment_method
+        ct.utm_source
         FROM civicrm.civicrm_contribution co, drupal.contribution_tracking ct
         WHERE co.id = ct.contribution_id
         AND ts BETWEEN %(start_ts)s AND %(stop_ts)s
@@ -130,7 +147,11 @@ class BannerDataRetriever(object):
         d['amount'] = d['amount'].astype(float)
         d['impressions_seen'] = d['impressions_seen'].fillna(-1)
         d['impressions_seen'] = d['impressions_seen'].astype(int)
-        #d['payment_method'] = d['payment_method'].apply(lambda x: x.decode('utf-8'))
+        try:
+            #d['utm_source'] = d['utm_source'].apply(lambda x: x.decode('utf-8'))
+            d['payment_method'] = d['utm_source'].apply(lambda x: x.split('.')[2])
+        except:
+            print("error decoding payment method")
 
         return d 
 
@@ -212,6 +233,10 @@ class OldBannerDataRetriever(BannerDataRetriever):
         """
 
         d = query_lutetium_robust(query, self.params)
+
+        if d.shape[0] == 0:
+            return pd.DataFrame(columns = ['count', 'timestamp'])
+
         d.index = pd.to_datetime(d['timestamp'])
         del d['timestamp']
         d['count'] = d['count'].fillna(0)
