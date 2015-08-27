@@ -14,6 +14,9 @@ import copy
 import traceback
 
 
+RECURRING_MONTHS = 14
+
+
 def query_lutetium_robust(query, params):
     # if the client does not have mysqldb, this wont work
     try:

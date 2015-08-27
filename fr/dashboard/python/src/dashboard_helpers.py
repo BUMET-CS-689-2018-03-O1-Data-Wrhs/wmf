@@ -110,6 +110,8 @@ class Test(object):
         d['avg_ro'] = [self.data[name]['clean_donations']['amount'].mean() for name in names]
 
         d = pd.DataFrame(d)
+
+    
         d.index = names
 
         # metrics computed from above metrics
@@ -118,6 +120,34 @@ class Test(object):
         d['amount/i'] = d['amount'] / d['impressions']
         d['amount_ro/i'] = d['amount_ro'] / d['impressions']
         d['dons/clicks'] = d['donations'] / d['clicks']
+
+         # Make numbers display nicely:
+        integer_columns = ['impressions',
+                            'clicks',
+                            'amount',
+                            'donations',
+                            'amount_ro',
+                            'max']
+
+        for c in integer_columns:
+            d[c] = d[c].apply(lambda x: "%d" % x)
+
+        precicion_2_columns = ['median',
+                                'avg',
+                                'avg_ro',
+                                ]
+
+        for c in precicion_2_columns:
+            d[c] = d[c].apply(lambda x: "%0.2f" % x)
+
+        precicion_5_columns = ['dons/i',
+                                'amount/i',
+                                'clicks/i',
+                                'amount_ro/i',
+                                'dons/clicks' ]
+
+        for c in precicion_5_columns:
+            d[c] = d[c].apply(lambda x: "%0.5f" % x)
 
 
         #Define the metrics in the order requested by Megan
@@ -142,7 +172,7 @@ class Test(object):
         #    column_order.insert(1, 'traffic')
         d = d[column_order]
 
-        return d.sort()
+        return d.sort().transpose()
 
 
     def get_payment_method_details(self, *args):
@@ -184,6 +214,7 @@ class Test(object):
             donations = self.data[name]['donations']['payment_method'].value_counts()
             donations_sum = self.data[name]['donations'].groupby(['payment_method']).apply(lambda x: x.amount.sum())
             ave = self.data[name]['clean_donations'].groupby(['payment_method']).apply(lambda x: x.amount.mean())
+
             df = pd.concat([donations, clicks, ave, donations_sum], axis=1)
             df.columns = ['donations', 'clicks', 'ave_amount_ro', 'total_amount']
 
@@ -204,6 +235,16 @@ class Test(object):
         df.index = pd.MultiIndex.from_tuples(list(zip(df['name'], df.index)))
         del df['name']
         df = df.sort()
+
+
+        precicion_2_columns = ['conversion_rate',
+                                'percent clicked on',
+                                'percent donated on',
+                                'ave_amount_ro',
+                                ]
+
+        for c in precicion_2_columns:
+            df[c] = df[c].apply(lambda x: "%0.2f" % x)
 
         return df
 
