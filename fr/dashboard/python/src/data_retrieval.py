@@ -14,7 +14,6 @@ import copy
 import traceback
 
 
-RECURRING_MONTHS = 14
 
 
 def query_lutetium_robust(query, params):
@@ -26,9 +25,10 @@ def query_lutetium_robust(query, params):
     except:
         print ("fetching data via ssh")
         ssh_params = copy.copy(params)
-        for k, v in ssh_params.items():
-            if isinstance(v, basestring):
-                ssh_params[k] = "'" + v + "'"
+
+        #for k, v in ssh_params.items():
+        #    if isinstance(v, basestring):
+        #        ssh_params[k] = "'" + v + "'"
         query = query % ssh_params
         file_name = str(hashlib.md5(query.encode()).hexdigest())
         return query_lutetium_ssh(query, file_name);
@@ -71,20 +71,7 @@ class BannerDataRetriever(object):
         pass
 
     def get_clicks(self,):
-        query = """
-        SELECT
-        ct.ts as timestamp, 
-        CAST(ct.utm_key as int) as impressions_seen, 
-        cs.payment_method
-        FROM drupal.contribution_tracking ct JOIN drupal.contribution_source cs
-        ON  ct.id = cs.contribution_tracking_id
-        WHERE banner = %(banner)s
-        AND ct.ts BETWEEN %(start_ts)s AND %(stop_ts)s
-        AND utm_medium = 'sitenotice'
-        ORDER BY ct.ts; 
-        """
-
-        #OLD Query is Back
+        
         query = """
         SELECT
         ct.ts as timestamp, 
@@ -114,27 +101,14 @@ class BannerDataRetriever(object):
 
 
     def get_donations(self):
+        
         query = """
         SELECT
-        co.total_amount as amount, 
+        co.total_amount AS amount, 
         ct.ts as timestamp, 
-        CAST(ct.utm_key as int) as impressions_seen, 
-        cs.payment_method
-        FROM civicrm.civicrm_contribution co, drupal.contribution_tracking ct, drupal.contribution_source cs
-        WHERE  ct.id = cs.contribution_tracking_id
-        AND co.id = ct.contribution_id
-        AND ts BETWEEN %(start_ts)s AND %(stop_ts)s
-        AND banner = %(banner)s
-        AND ct.utm_medium = 'sitenotice'
-        order by ct.ts;
-        """
-        #OLD Query is Back
-        query = """
-        SELECT
-        co.total_amount as amount, 
-        ct.ts as timestamp, 
-        CAST(ct.utm_key as int) as impressions_seen, 
-        ct.utm_source
+        CAST(ct.utm_key as int) AS impressions_seen, 
+        ct.utm_source,
+        co.contribution_recur_id IS NOT NULL as recurring
         FROM civicrm.civicrm_contribution co, drupal.contribution_tracking ct
         WHERE co.id = ct.contribution_id
         AND ts BETWEEN %(start_ts)s AND %(stop_ts)s

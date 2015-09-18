@@ -6,11 +6,14 @@ from matplotlib.dates import DateFormatter
 from .data_retrieval import get_banner_data, HiveBannerDataRetriever, OldBannerDataRetriever
 from datetime import timedelta
 from stats_utils import *
+import copy
 
 
 """
 This module contains the Test class
 """
+RECURRING_MONTHS = 14
+
 
 
 class Test(object):
@@ -103,11 +106,12 @@ class Test(object):
         d['clicks'] = [self.data[name]['clicks'].shape[0] for name in names]
         d['amount'] = [self.data[name]['donations']['amount'].sum() for name in names]
         d['donations'] = [self.data[name]['donations'].shape[0] for name in names]
-        d['amount_ro'] = [self.data[name]['clean_donations']['amount'].sum() for name in names]
+        d['recurring donations'] = [self.data[name]['donations']['recurring'].sum() for name in names]
+        d['amount (no outliers)'] = [self.data[name]['clean_donations']['amount'].sum() for name in names]
         d['max'] = [self.data[name]['donations']['amount'].max() for name in names]
         d['median'] = [self.data[name]['donations']['amount'].median() for name in names]
         d['avg'] = [self.data[name]['donations']['amount'].mean() for name in names]
-        d['avg_ro'] = [self.data[name]['clean_donations']['amount'].mean() for name in names]
+        d['avg (no outliers)'] = [self.data[name]['clean_donations']['amount'].mean() for name in names]
 
         d = pd.DataFrame(d)
 
@@ -118,7 +122,7 @@ class Test(object):
         d['clicks/i'] = d['clicks'] / d['impressions']
         d['dons/i'] = d['donations'] / d['impressions']
         d['amount/i'] = d['amount'] / d['impressions']
-        d['amount_ro/i'] = d['amount_ro'] / d['impressions']
+        d['amount/i (no outliers)'] = d['amount (no outliers)'] / d['impressions']
         d['dons/clicks'] = d['donations'] / d['clicks']
 
          # Make numbers display nicely:
@@ -126,7 +130,7 @@ class Test(object):
                             'clicks',
                             'amount',
                             'donations',
-                            'amount_ro',
+                            'amount (no outliers)',
                             'max']
 
         for c in integer_columns:
@@ -134,7 +138,7 @@ class Test(object):
 
         precicion_2_columns = ['median',
                                 'avg',
-                                'avg_ro',
+                                'avg (no outliers)',
                                 ]
 
         for c in precicion_2_columns:
@@ -143,7 +147,7 @@ class Test(object):
         precicion_5_columns = ['dons/i',
                                 'amount/i',
                                 'clicks/i',
-                                'amount_ro/i',
+                                'amount/i (no outliers)',
                                 'dons/clicks' ]
 
         for c in precicion_5_columns:
@@ -153,6 +157,7 @@ class Test(object):
         #Define the metrics in the order requested by Megan
         column_order = [
         'donations',
+        'recurring donations',
         'impressions',
         'dons/i',
         'amount',
@@ -160,12 +165,12 @@ class Test(object):
         'clicks',
         'clicks/i',
         'dons/clicks',
-        'amount_ro',
-        'amount_ro/i',
+        'amount (no outliers)',
+        'amount/i (no outliers)',
         'max',
         'median',
         'avg',
-        'avg_ro']
+        'avg (no outliers)']
 
         # put hive traffic data into df if available
         #if self.hive:
@@ -506,7 +511,10 @@ class Test(object):
         return int(samples_per_branch_calculator(rate, mde=mde, alpha=alpha, power=power))
 
 
-    def classic_amount_stats(self, a, b, conf=95, rate='donations/impressions', remove_outliers=True):
+    
+
+
+    def classic_amount_stats(self, a, b, conf=95, rate='donations/impressions', remove_outliers=True, recurring = False):
 
         """
         Gives a confidence for difference in the dollars per 1000 impressions between banners a, b 
@@ -522,20 +530,31 @@ class Test(object):
 
         t = rate.split('/')
 
+        data = copy.deepcopy(self.data)
+
         # use donation data with outliers removed by defualt
         if remove_outliers:
-
-            a_event_values = self.data[a]['clean_donations']['amount']
-            b_event_values = self.data[b]['clean_donations']['amount']
-
+            donations = 'clean_donations'
         else:
-            a_event_values = self.data[a]['donations']['amount']
-            b_event_values = self.data[b]['donations']['amount']
+            donations = 'donations'
+           
+        a_event_values = data[a][donations]
+        b_event_values = data[b][donations]
+
+        # if recurring, add the expected life_time amount from a recurring donors
+        if recurring:
+            a_event_values = model_recurring2(a_event_values)
+            b_event_values = model_recurring2(b_event_values)
+
+            
+
+        a_event_values = a_event_values['amount']
+        b_event_values = b_event_values['amount']
+            
 
         trial_type = t[1]
 
         
-
 
         if trial_type == 'clicks':
             a_num_trials = self.data[a]['clicks'].shape[0]
@@ -719,3 +738,14 @@ def custom_rate_stats(a_num_events, a_num_trials, b_num_events, b_num_trials, co
     d = pd.DataFrame.from_dict({'A':a_dist, 'B':b_dist})
     return print_rate_stats(d, conf, plot)
 
+
+def model_recurring1(donation_df):
+    reccurring_df = copy.deepcopy(donation_df[donation_df['recurring'] == 1])
+    for i in range(0, RECURRING_MONTHS -1):
+        donation_df = donation_df.append(copy.copy(reccurring_df))
+    return donation_df
+
+def model_recurring2(donation_df):
+    donation_df = copy.deepcopy(donation_df)
+    donation_df['amount'] = donation_df['amount'] + donation_df['amount'] * donation_df['recurring'] * (RECURRING_MONTHS-1)
+    return donation_df
