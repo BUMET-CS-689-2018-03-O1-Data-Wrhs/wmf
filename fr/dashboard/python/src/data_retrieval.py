@@ -157,24 +157,20 @@ class HiveBannerDataRetriever(BannerDataRetriever):
 
     def get_impressions(self):
         params = self.params.copy()
+        params['time_conditions'] = get_hive_timespan(params['start'], params['stop'])
         params['start'] = params['start'].replace(' ', 'T')
         params['stop'] = params['stop'].replace(' ', 'T')
+
         query = """
         SELECT 
-        sum(n) as count, minute as timestamp, result, reason, spider
-        FROM ellery.oozie_impressions_v0_1 
+        n as count, minute as timestamp
+        FROM ellery.oozie_impressions_v0_2 
         WHERE banner = '%(banner)s'
         AND minute BETWEEN '%(start)s' AND '%(stop)s' 
-        AND year BETWEEN %(start_year)s AND %(stop_year)s \n
+        AND year BETWEEN %(start_year)s AND %(stop_year)s 
+        AND %(time_conditions)s
         """
         
-        if params['start_year'] == params['stop_year']:
-            query += "AND month BETWEEN %(start_month)s AND %(stop_month)s \n"
-            if params['start_month'] == params['stop_month']:
-                query += "AND day BETWEEN %(start_day)s AND %(stop_day)s \n"
-
-
-        query += "GROUP BY minute, result, reason, spider;"
         query = query % params
 
         d = query_hive_ssh(query, 'hive_impressions_'+self.banner+".tsv")
@@ -187,12 +183,6 @@ class HiveBannerDataRetriever(BannerDataRetriever):
         return d
 
 
-    def get_all(self):
-        d = super(HiveBannerDataRetriever,self).get_all()
-        dtemp = d['impressions']
-        d['impressions'] = dtemp[(dtemp.result == 'show') & (dtemp.spider == False) ][['count']]
-        d['traffic'] = dtemp
-        return d
 
     
 
