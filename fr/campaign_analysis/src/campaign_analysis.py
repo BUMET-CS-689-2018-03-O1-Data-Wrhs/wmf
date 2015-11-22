@@ -39,9 +39,9 @@ def get_regs(dsk_campaign, mob_campaign, ipd_campaign):
 
 
     device_regs = collections.OrderedDict()
-    device_regs['Ipad'] = ipd
-    device_regs['Mobile'] = mob
     device_regs['Desktop'] = dsk
+    device_regs['Mobile'] = mob
+    device_regs['Ipad'] = ipd
 
     size_regs = collections.OrderedDict()
     size_regs['Large'] = lg
@@ -73,115 +73,11 @@ def get_regs(dsk_campaign, mob_campaign, ipd_campaign):
     return all_regs, device_regs, size_regs, dsk_regs,mob_regs, ipd_regs, lg_regs, sm_regs
 
 
-def get_clicks(start, stop, campaign = '.*'):
-
-    """
-    Gets all donation data within the time range start:stop
-    Groups data by banner, campaign and number of impressions seen
-    """
-    params = get_time_limits(start, stop)
-    params['campaign'] = campaign
-
-
-    query = """
-    SELECT
-    DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H') as timestamp,  CONCAT_WS(' ', banner, utm_campaign) as name,
-    COUNT(*) as n,
-    ct.country as country
-    FROM drupal.contribution_tracking ct, drupal.contribution_source cs
-    WHERE  ct.id = cs.contribution_tracking_id
-    AND ts BETWEEN %(start_ts)s AND %(stop_ts)s
-    AND utm_medium = 'sitenotice'
-    AND utm_campaign REGEXP %(campaign)s
-    GROUP BY DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H'),  CONCAT_WS(' ', banner, utm_campaign)
-    """
-    
-    d = query_lutetium(query, params)
-    d.index = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
-    #del d['timestamp']
-    
-    return d.sort()
-
-
-
-
-def get_donations(start, stop, campaign = '.*'):
-
-    """
-    Gets all donation data within the time range start:stop
-    Groups data by banner, campaign and number of impressions seen
-    """
-    params = get_time_limits(start, stop)
-    params['campaign'] = campaign
-
-
-    query = """
-    SELECT
-    DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H') as timestamp,  CONCAT_WS(' ', banner, utm_campaign) as name,
-    COUNT(*) as n,
-    SUM(co.total_amount) as amount,
-    ct.country as country
-    FROM civicrm.civicrm_contribution co, drupal.contribution_tracking ct, drupal.contribution_source cs
-    WHERE  ct.id = cs.contribution_tracking_id
-    AND co.id = ct.contribution_id
-    AND ts BETWEEN %(start_ts)s AND %(stop_ts)s
-    AND utm_medium = 'sitenotice'
-    AND utm_campaign REGEXP %(campaign)s
-    GROUP BY DATE_FORMAT(CAST(ts as datetime), '%%Y-%%m-%%d %%H'),  CONCAT_WS(' ', banner, utm_campaign)
-    """
-    
-    d = query_lutetium(query, params)
-    d.index = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
-    del d['timestamp']
-    d['amount'] = d['amount'].fillna(0.0)
-    d['amount'] = d['amount'].astype(float)
-    try:
-        d['name'] = d['name'].apply(lambda x: x.decode('utf-8'))
-    except:
-        pass
-    return d.sort()
-
-
-
-def get_impressions(start, stop, country_id = None):
-
-    """
-    Gets all donation data within the time range start:stop
-    Groups data by banner, campaign and number of impressions seen
-    """
-    params = get_time_limits(start, stop)
-    params['country_id'] = country_id
-
-
-    query = """
-    SELECT
-    DATE_FORMAT(CAST(timestamp as datetime), '%%Y-%%m-%%d %%H') as dt,  CONCAT_WS(' ', banner, campaign) as name, SUM(count) as n  
-    FROM pgehres.bannerimpressions 
-    WHERE  timestamp BETWEEN %(start)s AND %(stop)s
-    """
-    if country_id:
-        query += " AND country_id = %(country_id)s"
-
-    query += " GROUP BY DATE_FORMAT(CAST(timestamp as datetime), '%%Y-%%m-%%d %%H'),  CONCAT_WS(' ', banner, campaign)"
-    
-    d = query_lutetium(query, params)
-    d.index = d['dt'].map(lambda t: pd.to_datetime(str(t)))
-    del d['dt']
-    d['n'] = d['n'].astype(int)
-    try:
-        d['name'] = d['name'].apply(lambda x: x.decode('utf-8'))
-    except:
-        pass
-
-    
-    
-    return d.sort()
-
 
 def get_pageviews(start, stop, country, project):
     
     query = """
-    SELECT year, month, day, hour, SUM(view_count) as n, access_method FROM wmf.projectview_hourly
+    SELECT year, month, day, hour, SUM(view_count) as pageviews, access_method FROM wmf.projectview_hourly
     WHERE agent_type = 'user'
     AND %(time)s
     AND project = '%(project)s'
@@ -190,19 +86,22 @@ def get_pageviews(start, stop, country, project):
     """
     
     params = {'country': country, 'project': project, 'time': get_hive_timespan(start, stop) }
-    return query_hive_ssh(query % params, 'pvquery' + country + project, priority = True, delete = True)
+    d = query_hive_ssh(query % params, 'pvquery' + country + project, priority = True, delete = True)
+    dt = d["year"].map(str) + '-' + d["month"].map(str) + '-' + d["day"].map(str) + ' ' + d["hour"].map(str) + ':00'
+    d.index = pd.to_datetime(dt)
+
+    del d['year']
+    del d['month']
+    del d['day']
+    del d['hour']
+    return d
 
 
 def plot_traffic(pv, imp, source, reg, start, stop, hours = 1):
     pv_s  = copy.copy(pv[pv['access_method'] == source])
-    pv_s.rename(columns={'n': source + ' pageviews'}, inplace=True)
-    #pv_s.index = pd.date_range(start=start, end=stop, freq='H')
-    dt = pv_s["year"].map(str) + '-' + pv_s["month"].map(str) + '-' + pv_s["day"].map(str) + ' ' + pv_s["hour"].map(str) + ':00'
-    pv_s.index = pd.to_datetime(dt)
-
-
     pv_s.index = pd.Series(pv_s.index).apply(lambda tm: tm - timedelta(hours=(24 * tm.day + tm.hour) % hours))
     pv_s = pv_s.groupby(pv_s.index).sum()
+    pv_s.rename(columns={'pageviews': source + ' pageviews'}, inplace=True)
 
     imp_s = copy.copy(imp.ix[imp.name.str.match(reg).apply(bool)][['n']])
     imp_s.index = pd.Series(imp_s.index).apply(lambda tm: tm - timedelta(hours=(24 * tm.day + tm.hour) % hours))
@@ -212,8 +111,6 @@ def plot_traffic(pv, imp, source, reg, start, stop, hours = 1):
 
     d = pv_s.merge(imp_s, how = 'left', left_index = True, right_index = True)[[source + ' pageviews', source + ' impressions']]
     return plot_df(d, 'count per %d hours' % hours)
-
-
 
 
 
@@ -229,7 +126,7 @@ def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = Fal
     d_plot = pd.DataFrame()
     for name, reg in regs.items():
         if amount:
-            counts = d.ix[d.name.str.match(reg).apply(bool)]['amount']
+            counts = d.ix[d.name.str.match(reg).apply(bool)]['total_amount']
         else:
             counts = d.ix[d.name.str.match(reg).apply(bool)]['n']
 
@@ -241,18 +138,19 @@ def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = Fal
         else:
             d_plot[name] = counts.groupby(counts.index).sum()
 
-        if d_plot[name].shape[0] ==0:
+        if d_plot[name].shape[0] < 3:
             del d_plot[name]
             
             
 
-    if d_plot.shape[0] == 0:
+    if d_plot.shape[0] < 3:
         print('There is no data for this campaign or this kind of banners')
         return
 
     d_plot = d_plot.fillna(0)
 
-    return plot_df(d_plot, ylabel, interactive = interactive, rotate=rotate)
+
+    plot_df(d_plot, ylabel, interactive = interactive, rotate=rotate)
 
 
 
@@ -276,15 +174,68 @@ def plot_rate_by_time(don, imp, regs,  hours = 1, start = '2000', stop = '2050',
         imps = imp.ix[imp.name.str.match(reg).apply(bool)]['n']
         imps = imps.groupby(imps.index).sum()
 
-        d_plot[name] = (dons/imps)[:-1]
+        d_rate = dons/imps
 
-        if d_plot[name].shape[0] ==0:
-            del d_plot[name]
+        if d_rate.shape[0] < 3:
+            continue
 
-    if d_plot.shape[0] == 0:
+        largest = d_rate.nlargest(2).ix[1]
+        d_rate[d_rate > largest] = largest
+        d_plot[name] = d_rate
+
+        
+
+    if d_plot.shape[0] < 3:
         print('There is no data for this campaign or this kind of banners')
         return
-    #d_plot.plot(figsize=(10, 4))
+    
     return plot_df(d_plot, ylabel, interactive = interactive)
 
 
+def get_dollar_break_downs(don, regs):
+    d_totals = pd.DataFrame()
+    for name, reg in regs.items():
+        counts = don.ix[don.name.str.match(reg).apply(bool)]['total_amount']
+        if counts.shape[0] != 0: 
+            d_totals[name] = [counts.sum().astype(int)]
+    d_totals.index = ['Dollars']
+    return d_totals
+
+def get_donation_number_break_downs(don, regs):
+    d_totals = pd.DataFrame()
+    for name, reg in regs.items():
+        counts = don.ix[don.name.str.match(reg).apply(bool)]['n']
+        if counts.shape[0] != 0: 
+            d_totals[name] = [counts.sum()]
+    d_totals.index = ['# Donations']
+    return d_totals
+
+
+def get_average_donation_break_downs(don, regs):
+    d_totals = pd.DataFrame()
+    for name, reg in regs.items():
+        counts = don.ix[don.name.str.match(reg).apply(bool)]['n']
+        amounts = don.ix[don.name.str.match(reg).apply(bool)]['total_amount']
+        if counts.shape[0] != 0: 
+            d_totals[name] = ['%.2f' % (amounts.sum() / counts.sum())]
+    d_totals.index = ['Average Donations Amount']
+    return d_totals
+
+def get_impression_break_downs(imp, regs):
+    d_totals = pd.DataFrame()
+    for name, reg in regs.items():
+        counts = imp.ix[imp.name.str.match(reg).apply(bool)]['n']
+        if counts.shape[0] != 0: 
+            d_totals[name] = [counts.sum()]
+    d_totals.index = ['# Impressions']
+    return d_totals
+
+def get_donation_rate_break_downs(don, imp, regs):
+    d_totals = pd.DataFrame()
+    for name, reg in regs.items():
+        den = imp.ix[imp.name.str.match(reg).apply(bool)]['n']
+        num = don.ix[don.name.str.match(reg).apply(bool)]['n']
+        if den.shape[0] != 0: 
+            d_totals[name] = ['%.5f' % (num.sum()/den.sum())]
+    d_totals.index = ['Donation Rate']
+    return d_totals

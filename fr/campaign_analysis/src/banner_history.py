@@ -11,6 +11,13 @@ import re
 import pandas as pd
 from datetime import timedelta
 import matplotlib.pyplot as plt
+import seaborn as sns
+from pprint import pprint
+import pickle
+import seaborn as sns
+import numpy as np
+import copy
+from plot_utils import plot_df
 
 
 """
@@ -31,22 +38,18 @@ def load_rdd(sc, start, stop, hour = False):
     stop = dateutil.parser.parse(stop)
 
     while start <= stop:
-        f = os.path.join(base, str(start.year), str(start.month), str(start.day) )
-
+        f = os.path.join(base, start.strftime('%Y/%m/%d') )
 
         if hour:
-            if start.hour < 10:
-                h = '0' + str(start.hour)
-            else:
-                h = str(start.hour)
-            f = os.path.join(f, h)
+            f = os.path.join(base, start.strftime('%Y/%m/%d/%H') )
             start += relativedelta.relativedelta(hours=1)
         else:
             f = os.path.join(f, '*')
             start += relativedelta.relativedelta(days=1)
         files.append(f)
 
-    return sc.sequenceFile(','.join(files)).map(lambda x: json.loads(x[1])['event'])
+    file_str = ','.join(files)
+    return sc.sequenceFile(file_str).map(lambda x: json.loads(x[1])['event'])
 
 
 
@@ -151,21 +154,26 @@ def get_status_counts(data, hour = True):
 
 
 
-def get_previous_pageviews_counts(data):
+def get_previous_impression_counts(data, mapping = lambda x: str(x), hour = True):
     impressions = data.filter(lambda x: x['l'][-1]['s'] == '6')
-    counts = impressions.map(lambda x: (len([1 for e in x['l'] if e['s'] == '6']), 1)).countByKey()
+    if hour:
+        counts = impressions.map(lambda x: (x['l'][-1]['t'] + '|%s' % mapping(len([e for e in x['l'] if e['s'] == '6'])) , 1)).countByKey()
+    else:
+        counts = impressions.map(lambda x: (mapping(len([e for e in x['l'] if e['s'] == '6'])), 1)).countByKey()
     return counts
 
 
-def get_previous_impression_counts(data):
+def get_previous_pageview_counts(data, mapping = lambda x: str(x), hour = True):
     impressions = data.filter(lambda x: x['l'][-1]['s'] == '6')
-    counts = impressions.map(lambda x: (len(x['l']), 1)).countByKey()
+    if hour:
+        counts = impressions.map(lambda x: (x['l'][-1]['t'] + '|%s' % mapping(len(x['l'])), 1)).countByKey()
+    else:
+        counts = impressions.map(lambda x: (mapping(len(x['l'])), 1)).countByKey()
     return counts
     
 
-
-def plot_status(statcnts, hours, r , normalize):
-    d = pd.DataFrame(list(statcnts.items()))
+def get_counts_df(counts,  hours, r):
+    d = pd.DataFrame(list(counts.items()))
     d.columns = ['id', 'n']
     d['status'] = d['id'].apply(lambda x: x.split('|')[1])
     d['dt'] = d['id'].apply(lambda x: pd.to_datetime(x.split('|')[0] + ':00'))
@@ -179,10 +187,77 @@ def plot_status(statcnts, hours, r , normalize):
     d = d.unstack(level=[1])
     d.columns = d.columns.droplevel(0)
     d = d * r
+    return d
+
+
+def plot_counts(counts, hours, r , normalize):
+    d = get_counts_df(counts,  hours, r)
+    
+    ylabel = 'count'
     if normalize:
         d = d.div(d.sum(axis=1), axis=0)
+        ylabel = 'proportion'
 
-    fig = plt.figure(figsize=(24, 12), dpi=80)
+    fig = plt.figure(figsize=(12, 6), dpi=80)
     ax = fig.add_subplot(111)
-    d.plot(ax =ax, kind='bar', stacked=True, legend=True)
+    d.plot(ax =ax, kind='bar', stacked=True, legend=True, color = sns.color_palette("hls", 8))
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    ax.set_ylabel(ylabel)
+    #plt.tick_params(labelright=True)
+    if normalize:
+        ax.set_yticks(np.arange(0, 1.1, 0.1))
+
+def get_campaign_data(sc, campaign, banner_reg, start, stop):
+    data = load_rdd(sc, start, stop, hour = True)
+    data = transform_datetimes(data)
+    data = filter_dt(data, start, stop)
+    data = filter_campaign_stop_gap(data, campaign, banner_reg)
+    data = transform_reasons(data)
+    donor_data = get_donor_data(data)
+    sample_data = get_sample_data(data)
+    donor_data.persist()
+    sample_data.persist()
+    return donor_data, sample_data
+
+
+def get_counts(campaign, banner_reg, start, stop, dry = False):
+    cmd = """
+    ssh stat1002.eqiad.wmnet "\
+    spark-submit \
+    --driver-memory 1g --master yarn --deploy-mode client \
+    --num-executors 1 --executor-memory 10g --executor-cores 8 \
+    --queue priority \
+    /home/ellery/wmf/fr/campaign_analysis/src/get_banner_history_data.py \
+    --campaign '%s' \
+    --banner_reg '%s' \
+    --start '%s' \
+    --stop  '%s' \
+    "
+    """
+    cmd =  cmd % (campaign, banner_reg, start, stop)
+    if not dry:
+        ret = os.system(cmd)
+        assert(ret == 0)
+    os.system("scp stat1002.eqiad.wmnet:./sample_status_counts_%s ." % campaign)
+    os.system("scp stat1002.eqiad.wmnet:./sample_impression_counts_%s ." % campaign)
+    os.system("scp stat1002.eqiad.wmnet:./donor_impression_counts_%s ." % campaign)
+
+    sample_status_counts = pickle.load(open("sample_status_counts_%s" % campaign, 'rb'))
+    sample_impression_counts = pickle.load(open("sample_impression_counts_%s" % campaign, 'rb'))
+    donor_impression_counts = pickle.load(open("donor_impression_counts_%s" % campaign, 'rb'))
+
+    return sample_status_counts, sample_impression_counts, donor_impression_counts
+
+
+def plot_pv_fraction_in_campaign(pv, access_method, counts, sample_rate, hours = 1):
+    # get pvs per hours for source
+    pv  = copy.copy(pv[pv['access_method'] == access_method])
+    pv.index = pd.Series(pv.index).apply(lambda tm: tm - timedelta(hours=(24 * tm.day + tm.hour) % hours))
+    pv = pv.groupby(pv.index).sum()
+
+    pv['pageviews_in_campaign'] = get_counts_df(counts, hours, sample_rate).sum(axis=1)
+    pv['fraction_of_pageviews_in_campaign'] = pv['pageviews_in_campaign'] / pv['pageviews']
+    plot_df(pv[['fraction_of_pageviews_in_campaign']], 'fraction per %d hours' % hours)
+    return pv
+
+
