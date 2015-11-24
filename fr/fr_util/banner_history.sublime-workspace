@@ -1,0 +1,894 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"hive",
+				"hive-table"
+			],
+			[
+				"home",
+				"home_value"
+			],
+			[
+				"sto",
+				"stock_market"
+			],
+			[
+				"months",
+				"months_left"
+			],
+			[
+				"dump",
+				"dump_day"
+			],
+			[
+				"langa",
+				"language_pairs"
+			],
+			[
+				"ranked",
+				"ranked_missing_items"
+			],
+			[
+				"rank",
+				"rank_missing"
+			],
+			[
+				"Tr",
+				"TranslationRecommender"
+			],
+			[
+				"tra",
+				"translation_recommendations"
+			],
+			[
+				"to",
+				"topic_model"
+			],
+			[
+				"mis",
+				"missing_topic_matrix"
+			],
+			[
+				"m",
+				"missing_topic_matrix"
+			],
+			[
+				"save",
+				"save_rdd"
+			],
+			[
+				"num",
+				"num_examples"
+			],
+			[
+				"lan",
+				"languages"
+			],
+			[
+				"id",
+				"id2lang"
+			],
+			[
+				"get",
+				"get_parser"
+			],
+			[
+				"wikidata",
+				"wikidata_mapping"
+			],
+			[
+				"tex",
+				"textFile"
+			],
+			[
+				"M",
+				"MAX_ARTICLES"
+			],
+			[
+				"MI",
+				"MIN_ARTICLES"
+			],
+			[
+				"by",
+				"bytes_added"
+			],
+			[
+				"bty",
+				"bytes_added"
+			],
+			[
+				"missin",
+				"missing_items"
+			],
+			[
+				"tbal",
+				"table_queries"
+			],
+			[
+				"MIN",
+				"MIN_BYTES"
+			],
+			[
+				"bes",
+				"bestModel"
+			],
+			[
+				"winnin",
+				"winning_dist"
+			],
+			[
+				"lift",
+				"lift_dist"
+			],
+			[
+				"rate",
+				"rate_dists"
+			],
+			[
+				"c",
+				"clickstream"
+			],
+			[
+				"mc_jan",
+				"mc_jan_unfiltered"
+			],
+			[
+				"agg",
+				"agg_id"
+			],
+			[
+				"is",
+				"is_link"
+			],
+			[
+				"en",
+				"en_pagelinks"
+			],
+			[
+				"pl",
+				"pl_title"
+			],
+			[
+				"page",
+				"page_title"
+			],
+			[
+				"pre",
+				"prev_has_page_id"
+			],
+			[
+				"ag",
+				"agg_links"
+			],
+			[
+				"cur",
+				"curr_title"
+			],
+			[
+				"p",
+				"prev_id"
+			],
+			[
+				"cu",
+				"curr_title"
+			],
+			[
+				"prev",
+				"prev_title"
+			],
+			[
+				"en_",
+				"en_redirect"
+			],
+			[
+				"a",
+				"access_method"
+			],
+			[
+				"pr",
+				"prev_title"
+			],
+			[
+				"curr",
+				"curr_id"
+			],
+			[
+				"qu",
+				"query_lutetium"
+			],
+			[
+				"PA",
+				"PARSE_URL"
+			],
+			[
+				"cross",
+				"cross_validation"
+			],
+			[
+				"oozie",
+				"oozie_demo"
+			],
+			[
+				"pa",
+				"page_id"
+			],
+			[
+				"pag",
+				"page_title"
+			],
+			[
+				"l",
+				"link_id"
+			],
+			[
+				"lin",
+				"link_to_id"
+			],
+			[
+				"link",
+				"link_id"
+			],
+			[
+				"ur",
+				"urihost"
+			],
+			[
+				"column",
+				"column_order"
+			],
+			[
+				"ge",
+				"get_param_dict"
+			],
+			[
+				"mc",
+				"mc_agg"
+			],
+			[
+				"v",
+				"value_counts"
+			],
+			[
+				"uri",
+				"uri_path"
+			],
+			[
+				"regex",
+				"regex_dir"
+			],
+			[
+				"g",
+				"get_minute"
+			],
+			[
+				"def",
+				"defualt_d"
+			],
+			[
+				"max",
+				"max_run"
+			],
+			[
+				"fig",
+				"fig_name"
+			],
+			[
+				"run",
+				"run_time"
+			],
+			[
+				"params",
+				"params_list"
+			],
+			[
+				"x",
+				"x_grid"
+			],
+			[
+				"n",
+				"num_errors"
+			],
+			[
+				"num_",
+				"num_impressions"
+			],
+			[
+				"if",
+				"ifmain	if __name__ == '__main__'"
+			],
+			[
+				"b",
+				"b_impressions"
+			],
+			[
+				"b_",
+				"b_donations"
+			],
+			[
+				"count",
+				"country_id"
+			],
+			[
+				"i",
+				"ifmain	if __name__ == '__main__'"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "banner_history.py",
+			"settings":
+			{
+				"buffer_size": 6496,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "banner_history.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "Packa",
+		"selected_items":
+		[
+			[
+				"Packa",
+				"Package Control: Add Repository"
+			],
+			[
+				"Package Control: Install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"Pac",
+				"Package Control: Add Channel"
+			],
+			[
+				"Inde",
+				"Indent XML"
+			],
+			[
+				"In",
+				"Indent XML"
+			],
+			[
+				"Ind",
+				"Indent XML"
+			],
+			[
+				"in",
+				"Indent XML"
+			],
+			[
+				"I",
+				"Indent XML"
+			],
+			[
+				"Package",
+				"Package Control: Install Package"
+			],
+			[
+				"Paca",
+				"Package Control: Add Channel"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 101.0,
+		"history":
+		[
+			"\"/usr/bin/rsync\".endswith('/rsync')",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) ",
+			"Package",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+	],
+	"file_history":
+	[
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/refresh_campaign.py",
+		"/Users/ellerywulczyn/wmf/fr/dashboard/python/src/dashboard_helpers.py",
+		"/Users/ellerywulczyn/wmf/fr/dashboard/python/src/data_retrieval.py",
+		"/Users/ellerywulczyn/wmf/https_transition/censorship/data/blocked_keywords.tsv",
+		"/Users/ellerywulczyn/wmf/https_transition/censorship/data/blocked_articles.tsv",
+		"/Users/ellerywulczyn/wmf/https_transition/https_transition.sublime-project",
+		"/Users/ellerywulczyn/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/find_missing/get_missing_articles.py",
+		"/Users/ellerywulczyn/translation-recs-app/recommendation_lib/mk_data_dirs.py",
+		"/Users/ellerywulczyn/translation-recs-app/.gitignore",
+		"/Users/ellerywulczyn/translation-recs-app/served_translation_directions.json",
+		"/Users/ellerywulczyn/translation-recs-app/modeled_translation_directions.json",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/rank_missing/rank_missing_by_pageviews.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/rank_missing/get_pageviews.py",
+		"/Users/ellerywulczyn/translation-recs-app/translation-recs.ini",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/recommendation/get_gensim_lda_vectors.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/recommendation/download_dumps.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/find_missing/extract_interlanguage_links.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/recommendation/lda_preprocess.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/find_missing/sqoop_production_tables.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/rank_missing/get_disambiguation_pages.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/spark_util.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/run_missing_pipeline.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/recommendation/article_tokenization/run_article_tokenization.sh",
+		"/Users/ellerywulczyn/translation-recs-app/requirements.txt",
+		"/Users/ellerywulczyn/translation-recs-app/labs_setup.sh",
+		"/Users/ellerywulczyn/translation-recs-app/td.json",
+		"/Users/ellerywulczyn/translation-recs-app/api/recommender_api.py",
+		"/Users/ellerywulczyn/translation-recs-app/api/db_util.py",
+		"/Users/ellerywulczyn/translation-recs-app/recommendation_lib/transfer_util.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/ranking_util.py",
+		"/Users/ellerywulczyn/home_ownership/home_ownership.py",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/recommendation/README.txt",
+		"/Users/ellerywulczyn/Documents/SHR/notes",
+		"/Users/ellerywulczyn/translation-recs-app/recommendation_lib/rec_util.py",
+		"/Users/ellerywulczyn/content-translation/notes.txt",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/topic_modeling_pipeline.py",
+		"/Users/ellerywulczyn/translation-recs-app/language_codes.json",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/find_missing/README.md",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/rank_missing/README.md",
+		"/Users/ellerywulczyn/translation-recs-app/model_building/find_missing/sqoop_poduction_tables.py",
+		"/Users/ellerywulczyn/translation-recs-app/run_missing_pipeline.py",
+		"/Users/ellerywulczyn/translation-recs-app/api/app.py",
+		"/Users/ellerywulczyn/translation-recs-app/app/app.py",
+		"/Users/ellerywulczyn/translation-recs-app/app/db_util.py",
+		"/Users/ellerywulczyn/translation-recs-app/recommendation_lib/README.md",
+		"/Users/ellerywulczyn/Desktop/recs/templates/fr.html",
+		"/Users/ellerywulczyn/Desktop/recs/templates/es.html",
+		"/Users/ellerywulczyn/translation-recs-app/ml/find_missing/sqoop_poduction_tables.py",
+		"/Users/ellerywulczyn/translation-recs-app/tranlsation-recs.ini",
+		"/Users/ellerywulczyn/translation-recs-app/ml/find_missing/get_missing_articles.py",
+		"/Users/ellerywulczyn/translation-recs-app/ml/find_missing/README.md",
+		"/Users/ellerywulczyn/translation-recs-app/ml/find_missing/join_production_tables.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/rec_util.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/eval_util.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/missing_articles.ini",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/find_articles_for_translation.py",
+		"/Users/ellerywulczyn/translation-recs-app/ml/find_missing/extract_interlanguage_links.py",
+		"/Users/ellerywulczyn/translation-recs-app/app/rec_util.py",
+		"/Users/ellerywulczyn/Desktop/recs/templates/esnew.html",
+		"/Users/ellerywulczyn/Desktop/recs/split.py",
+		"/Users/ellerywulczyn/wmf/fr/one_off_notebooks/show_hide_june_15.tsv",
+		"/Users/ellerywulczyn/wmf/https_transition/query.sql",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/util.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/recommendation_utils.py",
+		"/Users/ellerywulczyn/Desktop/examples.txt",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/als.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/als_importance.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/aggregate_contributions.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/lda_preprocess.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/python/get_gensim_lda_vectors.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/spark/split_train_test.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/sqoop/sqoop_poduction_tables.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/sqoop/joins.py",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/pig/postprocess_revision_history.pig",
+		"/Users/ellerywulczyn/wikimedia/missing_articles/src/main/scala/testApp.scala",
+		"/Users/ellerywulczyn/wikimedia_old/src/main/spark/als.py",
+		"/Users/ellerywulczyn/wikimedia/src/main/spark/als.py",
+		"/Users/ellerywulczyn/wikimedia/src/main/python/gensim_experiment.py",
+		"/Users/ellerywulczyn/wikimedia/src/main/spark/LSI.py",
+		"/Users/ellerywulczyn/wikimedia/src/main/spark/LSI.scala",
+		"/Users/ellerywulczyn/wikimedia/src/main/python/sqoop_poduction_tables.py",
+		"/Users/ellerywulczyn/wikimedia/wikidata_explorations.txt",
+		"/Users/ellerywulczyn/wikimedia/src/main/spark/overlap.py",
+		"/Users/ellerywulczyn/Downloads/training-downloads/machine-learning/python/solution/MovieLensALS.py",
+		"/Users/ellerywulczyn/miniconda3/lib/python3.4/site-packages/wmf.pth",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/campaign_analysis_5C_2014.ipynb",
+		"/Users/ellerywulczyn/wmf/util/db_utils.py",
+		"/Users/ellerywulczyn/.stat3.cnf",
+		"/Users/ellerywulczyn/wmf/wikigrok/data/actor-television.json",
+		"/Users/ellerywulczyn/wmf/wikigrok/data/actor-film.json",
+		"/Users/ellerywulczyn/wmf/wikigrok/data/actor.json",
+		"/Users/ellerywulczyn/wmf/wikigrok/data/writer-author.json",
+		"/Users/ellerywulczyn/wmf/wikigrok/data/writers.json",
+		"/Users/ellerywulczyn/wmf/clickstream/publish/generate_monthly_agg.sql",
+		"/Users/ellerywulczyn/wmf_ab/index.js",
+		"/Users/ellerywulczyn/wmf/fr/dashboard/js/hypothesis_testing.js",
+		"/Users/ellerywulczyn/wmf/clickstream/oozie/hive_create.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_hourly/oozie/hive_query.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/coordinator.properties",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/hive_query.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/commads.sh",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/trend_scoring_test.tsv",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/trend_scoring.py",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/coordinator.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/misc/scratch.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/coordinator.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/trending/oozie/workflow.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/hive_query.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/workflow.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/coordinator.properties",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/commads.sh",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/coordinator.properties",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/burst_scoring.py",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/hive_query.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/coordinator.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/burst_scoring_test.tsv",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/misc/scratch.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/misc/burst_scoring_test.tsv",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/misc/burst_scoring.py",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/burts_scoring_test.tsv",
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/scratch.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/commads.sh",
+		"/Users/ellerywulczyn/wmf/trending_locally/brainstorm.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/workflow.xml",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/hive_query.sql",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/commads.sh",
+		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/coordinator.xml"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"vivo",
+			"in vivo",
+			"get_all",
+			"result",
+			"page",
+			"%(db)s",
+			"/%(lang)swiki",
+			"cp",
+			"sqoop_tables",
+			"cp.get",
+			"config",
+			"underscore",
+			"print",
+			"assert",
+			"logger",
+			"codecs",
+			".items",
+			"create_graph",
+			"%t",
+			"Starting Get Missing for s=",
+			"Starting ",
+			"print",
+			"test_clustering",
+			"print",
+			"INFO",
+			"download_dumps",
+			"textFile",
+			"iter",
+			"os.",
+			"print",
+			"pprint",
+			"print",
+			"contribution_df",
+			"get_user_interest_vector",
+			"get_personlized_recommendations",
+			"get_personlized_recommendations\nget_personlized_recommendations",
+			"get_personlized_recommendations",
+			"income_rent",
+			"get_upfront_costs",
+			"diffs",
+			"monthly_own",
+			"np.arra",
+			"'rent",
+			"monthly_mortgage_cost",
+			" ',",
+			"home_price",
+			"multi_scorer_regression",
+			"rmse",
+			"sqrt",
+			"get_wikidata_dump",
+			"cp.get",
+			"recommendation",
+			"cp.get",
+			"load_articles",
+			"datetime",
+			"wd_languages",
+			"delim",
+			"no missing parents",
+			"translation_directions",
+			"find_missing",
+			"WILL",
+			"(project_path,",
+			"'missing",
+			"argparse",
+			"print",
+			"load_recommenders",
+			"None",
+			"missing_df",
+			"s_title",
+			"from",
+			"word2id",
+			"query_ssh",
+			"get_user_contributions",
+			"squeeze",
+			"print",
+			"id2sname",
+			"get_recommendations_helper",
+			"id2sname",
+			"id2importance",
+			"hadoop_base_dir",
+			"base_dir",
+			"dir",
+			"IDF",
+			"HashingTF",
+			"LabeledPoint",
+			"gensim",
+			"token",
+			",,",
+			" , ,",
+			"load_articles",
+			"LANG",
+			"exp",
+			"exp_dir",
+			"expdir",
+			"cp",
+			"get_missing_items(sc, cp, G, s, t, delim)",
+			"get_missing_items",
+			"is_subgraph_missing_target_item",
+			"n =",
+			"create_graph",
+			"id2article",
+			"prod_table",
+			"prod_tables",
+			"overwite",
+			"%(wiki)s",
+			"pyc",
+			"h4",
+			"score",
+			"pagev",
+			"aggregated",
+			"get_affinities",
+			"e2",
+			"e1",
+			"rsyn",
+			"sparse",
+			"cvxopt",
+			"csr_matrix",
+			"solvers",
+			"np",
+			"normalize",
+			"scipy",
+			"log",
+			"recommend",
+			"recommned",
+			"   ",
+			"        ",
+			"geocode_country",
+			"save_merged_items"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"%(hive_db)s",
+			"/%(mysql_db)s",
+			"info",
+			"(cp.get('DEFAULT', 'project_path'),",
+			"page_title",
+			"%(lang)swiki",
+			"    ",
+			"eswiki",
+			"dewiki",
+			"os.path.join",
+			"wmf_ab",
+			"trending",
+			"bursting",
+			"daily",
+			"mc_jan",
+			"VARIANT",
+			"STD",
+			"%",
+			"${year}_${month}_${day}_${hour}",
+			"\"",
+			"app_pageviews",
+			"banner_count",
+			"num_samples(",
+			"95",
+			"95(",
+			"bayesian_ci(",
+			"get_beta_dist",
+			"difference_in_means_confidence_interval",
+			"query_hive_ssh",
+			"get_lutetium_conn",
+			"import_clicks",
+			"click_stream"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "banner_history.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6496,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6496,
+								6496
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "banner_history.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "json",
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "banner_history.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 177.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
