@@ -19,7 +19,6 @@ import numpy as np
 import copy
 from plot_utils import plot_df
 
-
 """
 A pageview is either in the sample or out of the sample. 
 If a pageview in the sample lead to a donation, the event is not resent on the donation.
@@ -52,24 +51,6 @@ def load_rdd(sc, start, stop, hour = False):
     return sc.sequenceFile(file_str).map(lambda x: json.loads(x[1])['event'])
 
 
-
-def get_donor_data(data):
-    return data.filter(lambda x: 'r' not in x)
-
-
-def get_sample_data(data):
-    return data.filter(lambda x: 'r' in x)
-
-
-def transform_datetimes(data):
-    
-    def f(x):
-        for elem in x['l']:
-         elem['t'] = datetime.datetime.fromtimestamp(elem['t']).strftime('%Y-%m-%d %H') #:%M:%S
-        return x
-    return data.map(f)
-
-
 status_codes = {
  '0' : 'CAMPAIGN_NOT_CHOSEN',
  '1' : 'CAMPAIGN_CHOSEN',
@@ -93,19 +74,30 @@ reason_codes =  {
 '9' : 'donate'
 }
 
-def transform_reasons(data):
 
-    def get_readable_reasons(h):
-        for d in h['l']:
-            status = d['s'].split('.')
+def parse_log_array(data):
+    def parse(x):
+        parsed_log_array = []
+        for elem in x['l']:
+            fields = elem.split('|')
+            if len(fields) != 4:
+                continue
+
+            status = fields[3].split('.')
             if len(status) == 1:
                 status.append(None)
-                  
-            d['status'] = status_codes.get(status[0], 'UNKNOWN')
-            d['reason'] = reason_codes.get(status[1], '')
-        return h
 
-    return data.map(get_readable_reasons)
+            d = {   'banner': fields[0],
+                    'campaign': fields[1],
+                    'timestamp': datetime.datetime.fromtimestamp(int(fields[2])).strftime('%Y-%m-%d %H:%M:%S'),
+                    'status' : status_codes.get(status[0], 'UNKNOWN'),
+                    'reason' : reason_codes.get(status[1], ''),
+                }
+            parsed_log_array.append(d)
+        x['l'] = parsed_log_array
+        return x
+
+    return data.map(parse)
 
 
 
@@ -114,36 +106,38 @@ def filter_dt(data, start, stop):
         last_elem = x['l'][-1]
         if last_elem['t'] < start:
             return False
-        if last_elem['t'] > stop:
+
+        first_elem = x['l'][0]
+        if first_elem['t'] > stop:
             return False
 
         return True
-
     return data.filter(inlcude)
 
 
-def filter_campaign(data, campaign):
+def filter_campaign(data, campaign, banner_reg = '.*'):
     def inlcude(x):
         last_elem = x['l'][-1]
-        if 'c' in last_elem and last_elem['c'] == campaign:
+        if last_elem['campaign'] == campaign:
+            return True
+        if 'banner' in last_elem and  re.match(banner_reg, last_elem['banner']):
             return True
 
         return False
-
     return data.filter(inlcude)
 
 
-def filter_campaign_stop_gap(data, campaign, banner_reg):
-    def inlcude(x):
-        last_elem = x['l'][-1]
-        if 'c' in last_elem and last_elem['c'] == campaign:
-            return True
-        if 'b' in last_elem and  re.match(banner_reg, last_elem['b']):
-            return True
 
-        return False
 
-    return data.filter(inlcude)
+def get_donor_data(data):
+    return data.filter(lambda x: 'r' not in x)
+
+
+def get_sample_data(data):
+    return data.filter(lambda x: 'r' in x)
+
+
+
 
 def get_status_counts(data, hour = True):
     if hour:
@@ -207,6 +201,8 @@ def plot_counts(counts, hours, r , normalize):
     if normalize:
         ax.set_yticks(np.arange(0, 1.1, 0.1))
 
+
+
 def get_campaign_data(sc, campaign, banner_reg, start, stop):
     data = load_rdd(sc, start, stop, hour = True)
     data = transform_datetimes(data)
@@ -220,6 +216,7 @@ def get_campaign_data(sc, campaign, banner_reg, start, stop):
     return donor_data, sample_data
 
 
+
 def get_counts(campaign, banner_reg, start, stop, dry = False):
     cmd = """
     ssh stat1002.eqiad.wmnet "\
@@ -227,7 +224,7 @@ def get_counts(campaign, banner_reg, start, stop, dry = False):
     --driver-memory 1g --master yarn --deploy-mode client \
     --num-executors 1 --executor-memory 10g --executor-cores 8 \
     --queue priority \
-    /home/ellery/wmf/fr/campaign_analysis/src/get_banner_history_data.py \
+    /home/ellery/wmf/fr/fr_util/get_banner_history_data.py \
     --campaign '%s' \
     --banner_reg '%s' \
     --start '%s' \

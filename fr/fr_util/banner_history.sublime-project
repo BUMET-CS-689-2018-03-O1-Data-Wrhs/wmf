@@ -1,52 +1,47 @@
 {
-	"folders":
-	[
-		{
-			"path": "."
-		},
-		{
-			"path": "/Users/ellerywulczyn/wmf/fr/dashboard/python/src"
-		},
-		{
-			"path": "/Users/ellerywulczyn/wmf/fr/fr_util"
-		}
-	],
-	"settings":
-	{
-		"rsync_ssh":
-		{
-			"excludes":
-			[
-				".git*",
-				"_build",
-				"blib",
-				"Build"
-			],
-			"options":
-			[
-			],
-			"remotes":
-			{
-				"/Users/ellerywulczyn/wmf/fr/fr_utils":
-				[
-					{
-						"enabled": 1,
-						"excludes":
-						[
-						],
-						"options":
-						[
-						],
-						"remote_host": "stat1002.eqiad.wmnet",
-						"remote_path": "/home/ellery/wmf/fr/fr_utils",
-						"remote_port": 22,
-						"remote_post_command": "",
-						"remote_pre_command": "",
-						"remote_user": "ellery"
-					}
-				]
-			},
-			"sync_on_save": true
-		}
-	}
+    "folders":
+    [
+        {
+            "path": "."
+        }
+    ],
+    "settings":
+    {
+        "rsync_ssh":
+        {
+            "excludes":
+            [
+                ".git*",
+                "_build",
+                "blib",
+                "Build"
+            ],
+            "options":
+            [
+                
+            ],
+            "remotes":
+            {
+                "/Users/ellerywulczyn/wmf/fr/fr_util":
+                [
+                    {
+                        "enabled": 1,
+                        "excludes":
+                        [
+                        ],
+                        "options":
+                        [
+                        ],
+                        "remote_host": "stat1002.eqiad.wmnet",
+                        "remote_path": "/home/ellery/wmf/fr/fr_util",
+                        "remote_port": 22,
+                        "remote_post_command": "",
+                        "remote_pre_command": "",
+                        "remote_user": "ellery"
+                    }
+                ]
+            },
+            "sync_on_save": true
+        }
+    }
 }

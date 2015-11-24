@@ -319,22 +319,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "banner_history.py",
-			"settings":
-			{
-				"buffer_size": 6496,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "banner_history.sublime-project",
-			"settings":
-			{
-				"buffer_size": 45,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -392,7 +376,7 @@
 	},
 	"console":
 	{
-		"height": 101.0,
+		"height": 210.0,
 		"history":
 		[
 			"\"/usr/bin/rsync\".endswith('/rsync')",
@@ -415,7 +399,13 @@
 	],
 	"file_history":
 	[
+		"/Users/ellerywulczyn/wmf/fr/fr_util/banner_history.sublime-project",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/conversion_analysis.py",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/campaign_analysis.py",
 		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/refresh_campaign.py",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/banner_history.py",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/get_banner_history_data.py",
+		"/Users/ellerywulczyn/wmf/fr/campaign_analysis/src/banner_history.sublime-project",
 		"/Users/ellerywulczyn/wmf/fr/dashboard/python/src/dashboard_helpers.py",
 		"/Users/ellerywulczyn/wmf/fr/dashboard/python/src/data_retrieval.py",
 		"/Users/ellerywulczyn/wmf/https_transition/censorship/data/blocked_keywords.tsv",
@@ -536,13 +526,7 @@
 		"/Users/ellerywulczyn/wmf/trending_locally/bursting/misc/burst_scoring_test.tsv",
 		"/Users/ellerywulczyn/wmf/trending_locally/bursting/misc/burst_scoring.py",
 		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/burts_scoring_test.tsv",
-		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/scratch.sql",
-		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews_daily/oozie/commads.sh",
-		"/Users/ellerywulczyn/wmf/trending_locally/brainstorm.sql",
-		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/workflow.xml",
-		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/hive_query.sql",
-		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/commads.sh",
-		"/Users/ellerywulczyn/wmf/trending_locally/geo_pageviews/daily/oozie/coordinator.xml"
+		"/Users/ellerywulczyn/wmf/trending_locally/bursting/oozie/scratch.sql"
 	],
 	"find":
 	{
@@ -560,6 +544,30 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"remove",
+			"-",
+			"plot_utm",
+			"donation",
+			"total_amount",
+			"impressions",
+			"donation_fi",
+			"print",
+			"amount",
+			"'count",
+			"count",
+			"print",
+			"cs",
+			".shape",
+			"print",
+			"plot",
+			"pv_s",
+			"methods",
+			"plot_conversion_rate",
+			"==",
+			"print",
+			":-1",
+			"plot",
+			"confog",
 			"vivo",
 			"in vivo",
 			"get_all",
@@ -663,31 +671,7 @@
 			"id2article",
 			"prod_table",
 			"prod_tables",
-			"overwite",
-			"%(wiki)s",
-			"pyc",
-			"h4",
-			"score",
-			"pagev",
-			"aggregated",
-			"get_affinities",
-			"e2",
-			"e1",
-			"rsyn",
-			"sparse",
-			"cvxopt",
-			"csr_matrix",
-			"solvers",
-			"np",
-			"normalize",
-			"scipy",
-			"log",
-			"recommend",
-			"recommned",
-			"   ",
-			"        ",
-			"geocode_country",
-			"save_merged_items"
+			"overwite"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -695,6 +679,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"dollars",
+			"pv",
 			"%(hive_db)s",
 			"/%(mysql_db)s",
 			"info",
@@ -737,71 +723,8 @@
 	"groups":
 	[
 		{
-			"selected": 1,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "banner_history.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6496,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6496,
-								6496
-							]
-						],
-						"settings":
-						{
-							"WordCountShouldRun": false,
-							"WordCountSyntax": "python",
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "banner_history.sublime-project",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 45,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"WordCountShouldRun": false,
-							"WordCountSyntax": "json",
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -886,7 +809,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 177.0,
+	"side_bar_width": 185.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
