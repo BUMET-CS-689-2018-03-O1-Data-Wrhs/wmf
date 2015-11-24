@@ -12,6 +12,7 @@ from db_utils import *
 import hashlib
 import copy
 import traceback
+from civi_utils import get_clicks, get_donations, get_impressions
 
 
 
@@ -25,10 +26,6 @@ def query_lutetium_robust(query, params):
     except:
         print ("fetching data via ssh")
         ssh_params = copy.copy(params)
-
-        #for k, v in ssh_params.items():
-        #    if isinstance(v, basestring):
-        #        ssh_params[k] = "'" + v + "'"
         query = query % ssh_params
         file_name = str(hashlib.md5(query.encode()).hexdigest())
         return query_lutetium_ssh(query, file_name);
@@ -71,67 +68,29 @@ class BannerDataRetriever(object):
         pass
 
     def get_clicks(self,):
+
+        fields = ['payment_method']
+
+        return get_clicks(self.params['start'], \
+                          self.params['stop'],  \
+                          banner_reg = self.params['banner'], \
+                          aggregation = 'none', \
+                          fields = fields, \
+                          )
+
+
+    def get_donations(self,):
+
+        fields = ['recurring', 'impressions_seen', 'payment_method', 'amount']
+
+        return get_donations(self.params['start'], \
+                          self.params['stop'],  \
+                          banner_reg = self.params['banner'], \
+                          aggregation = 'none', \
+                          fields = fields, \
+                          )
         
-        query = """
-        SELECT
-        ct.ts as timestamp, 
-        CAST(ct.utm_key as int) as impressions_seen, 
-        ct.utm_source 
-        FROM drupal.contribution_tracking ct
-        WHERE SUBSTRING_INDEX(ct.utm_source, '.', 1) = %(banner)s
-        AND ct.ts BETWEEN %(start_ts)s AND %(stop_ts)s
-        AND ct.utm_medium = 'sitenotice'
-        ORDER BY ct.ts; 
-        """
-
-        d = query_lutetium_robust(query, self.params)
-        d.index  = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
-        del d['timestamp']
-        d['impressions_seen'] = d['impressions_seen'].fillna(-1)
-        d['impressions_seen'] = d['impressions_seen'].astype(int)
-        try:
-            #d['utm_source'] = d['utm_source'].apply(lambda x: x.decode('utf-8'))
-            d['payment_method'] = d['utm_source'].apply(lambda x: x.split('.')[2])
-        except:
-            print(traceback.format_exc())
-            print("error decoding payment method")
-
-
-        return d
-
-
-    def get_donations(self):
-        
-        query = """
-        SELECT
-        co.total_amount AS amount, 
-        ct.ts as timestamp, 
-        CAST(ct.utm_key as int) AS impressions_seen, 
-        ct.utm_source,
-        co.contribution_recur_id IS NOT NULL as recurring
-        FROM civicrm.civicrm_contribution co, drupal.contribution_tracking ct
-        WHERE co.id = ct.contribution_id
-        AND ts BETWEEN %(start_ts)s AND %(stop_ts)s
-        AND SUBSTRING_INDEX(ct.utm_source, '.', 1) = %(banner)s
-        AND ct.utm_medium = 'sitenotice'
-        order by ct.ts;
-        """
-
-        d = query_lutetium_robust(query, self.params)
-        d.index = d['timestamp'].map(lambda t: pd.to_datetime(str(t)))
-        del d['timestamp']
-        d['amount'] = d['amount'].fillna(0.0)
-        d['amount'] = d['amount'].astype(float)
-        d['impressions_seen'] = d['impressions_seen'].fillna(-1)
-        d['impressions_seen'] = d['impressions_seen'].astype(int)
-        try:
-            #d['utm_source'] = d['utm_source'].apply(lambda x: x.decode('utf-8'))
-            d['payment_method'] = d['utm_source'].apply(lambda x: x.split('.')[2])
-        except:
-            print("error decoding payment method")
-
-        return d 
-
+    
     def get_all(self):
         d = {}
         d['clicks'] = self.get_clicks()
@@ -163,7 +122,7 @@ class HiveBannerDataRetriever(BannerDataRetriever):
 
         query = """
         SELECT 
-        n as count, minute as timestamp
+        n, minute as timestamp
         FROM ellery.oozie_impressions_v0_2 
         WHERE banner = '%(banner)s'
         AND minute BETWEEN '%(start)s' AND '%(stop)s' 
@@ -177,37 +136,24 @@ class HiveBannerDataRetriever(BannerDataRetriever):
         d.index = pd.to_datetime(d['timestamp'])
         d = d.sort()
         del d['timestamp']
-        d['count'] = d['count'].fillna(0)
-        d['count'] = d['count'].astype(int)
+        d['n'] = d['n'].fillna(0)
+        d['n'] = d['n'].astype(int)
         d = d.fillna('na')
         return d
 
 
 
-    
-
 class OldBannerDataRetriever(BannerDataRetriever):
 
     def get_impressions(self):
 
-        query = """
-        SELECT SUM(count) as count, timestamp 
-        FROM pgehres.bannerimpressions 
-        WHERE banner = %(banner)s 
-        AND timestamp BETWEEN %(start)s AND %(stop)s 
-        GROUP BY timestamp 
-        ORDER BY timestamp;
-        """
+        d =  get_impressions(self.params['start'], \
+                          self.params['stop'],  \
+                          banner_reg = self.params['banner'], \
+                          aggregation = 'none', \
+                          )
 
-        d = query_lutetium_robust(query, self.params)
-
-        if d.shape[0] == 0:
-            return pd.DataFrame(columns = ['count', 'timestamp'])
-
-        d.index = pd.to_datetime(d['timestamp'])
-        del d['timestamp']
-        d['count'] = d['count'].fillna(0)
-        d['count'] = d['count'].astype(int)
-
+        # get_impressions does not allow picking fields yet, so need to group by banner and time
+        d = d[['banner', 'n']].groupby(d.index).sum()
         return d
 

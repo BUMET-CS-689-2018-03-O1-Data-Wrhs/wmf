@@ -126,7 +126,7 @@ def plot_by_time(d, regs, start = '2000', stop = '2050', hours = 1, amount = Fal
     d_plot = pd.DataFrame()
     for name, reg in regs.items():
         if amount:
-            counts = d.ix[d.name.str.match(reg).apply(bool)]['total_amount']
+            counts = d.ix[d.name.str.match(reg).apply(bool)]['dollars']
         else:
             counts = d.ix[d.name.str.match(reg).apply(bool)]['n']
 
@@ -195,9 +195,9 @@ def plot_rate_by_time(don, imp, regs,  hours = 1, start = '2000', stop = '2050',
 def get_dollar_break_downs(don, regs):
     d_totals = pd.DataFrame()
     for name, reg in regs.items():
-        counts = don.ix[don.name.str.match(reg).apply(bool)]['total_amount']
+        counts = don.ix[don.name.str.match(reg).apply(bool)]['dollars']
         if counts.shape[0] != 0: 
-            d_totals[name] = [counts.sum().astype(int)]
+            d_totals[name] = [int(counts.sum())]
     d_totals.index = ['Dollars']
     return d_totals
 
@@ -215,7 +215,7 @@ def get_average_donation_break_downs(don, regs):
     d_totals = pd.DataFrame()
     for name, reg in regs.items():
         counts = don.ix[don.name.str.match(reg).apply(bool)]['n']
-        amounts = don.ix[don.name.str.match(reg).apply(bool)]['total_amount']
+        amounts = don.ix[don.name.str.match(reg).apply(bool)]['dollars']
         if counts.shape[0] != 0: 
             d_totals[name] = ['%.2f' % (amounts.sum() / counts.sum())]
     d_totals.index = ['Average Donations Amount']

@@ -36,6 +36,8 @@ class Test(object):
     def get_clean_donations(self, donations):
         clean_donations =  donations[np.abs(donations.amount-donations.amount.mean()) <= (4*donations.amount.std())]
         return clean_donations
+
+
     def combine(self, names, combination_name):
 
         """
@@ -98,11 +100,9 @@ class Test(object):
 
         # Step through metrics and compute them for each banner
 
-        # hive data can give stats on how much traffic was allocated to a banner
-        #if self.hive: 
-        #    d['traffic'] = [self.data[name]['traffic']['count'].sum() for name in names]
+       
 
-        d['impressions'] = [self.data[name]['impressions']['count'].sum() for name in names]
+        d['impressions'] = [self.data[name]['impressions']['n'].sum() for name in names]
         d['clicks'] = [self.data[name]['clicks'].shape[0] for name in names]
         d['amount'] = [self.data[name]['donations']['amount'].sum() for name in names]
         d['donations'] = [self.data[name]['donations'].shape[0] for name in names]
@@ -254,36 +254,6 @@ class Test(object):
         return df
 
 
-    def get_traffic_stats(self, *args):
-
-        """
-        The data in hive gives us all traffic allocated to banner.
-        When a pageview is allocated to a banner it can the shown or not.
-        If it is not shown, there can be multiple reasons.
-        The hive data also tags spiders, so we can see if a spider was active during the test 
-        """
-
-        if not self.hive:
-            print ("Test object needs to be instantiated with keyword argument hive=True")
-            return
-
-        # set up list of banner to process
-        if len(args) == 0:
-            names = self.names
-        else:
-            names = args
-
-        ds = []
-        for name in names:
-            df = self.data[name]['traffic'].groupby(['result', 'reason', 'spider']).sum()
-            df = df.rename(columns={'count':name}).transpose()
-            ds.append(df)
-
-        df = pd.concat(ds)
-        df = df.sort()
-        return df
-
-
 
     def plot_donations_over_time(self, *args, **kwargs):
         # set up list of banner to process
@@ -371,10 +341,10 @@ class Test(object):
         plt.gcf().axes[0].xaxis.set_major_formatter(formatter)
 
         for name in names:
-            d = self.data[name]['impressions']
+            d = self.data[name]['impressions']['n']
             d = d[start:stop]        
             d = pd.rolling_mean(d, smooth)
-            ax.plot(d.index, d['count'], label=name)
+            ax.plot(d.index, d.values, label=name)
 
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         plt.ylabel('impressions')
@@ -406,7 +376,7 @@ class Test(object):
             d = d.sort()
             if normalize:
                 d[0] = d[0]/d[0].sum()
-            d1 = d[:max_key]
+            d1 = copy.deepcopy(d[:max_key])
             d1.loc[max_key+1] = d[max_key:].sum()
 
             ax.plot(d1.index, d1[0], marker='o', label=name)
@@ -470,39 +440,6 @@ class Test(object):
         autolabel(b_rects)
 
         plt.show()
-
-
-
-
-    def plot_show_hide(self, banner, stop ='2050', minutes =1):
-
-        """
-        For the given banner, gives the breakdown of 
-        how many banners where shown and the reason for when the where hidden
-        for every 'minutes' minutes
-        """
-        
-        d = self.data[banner]['traffic'].copy()
-        d = d[:stop]
-        d = d.fillna('na')
-        d = d[d.spider == False]
-        d['dt'] = d.index
-        d['dt'] = d['dt'].apply(lambda tm: tm - timedelta(minutes=(60 * tm.hour + tm.minute) % minutes))
-        d.index = pd.MultiIndex.from_tuples(zip(d['dt'], d['result'], d['reason']))
-        d = d[['count',]]
-        
-        d = d.groupby(d.index).sum()
-        d.index = pd.MultiIndex.from_tuples(d.index)
-
-        d = d.unstack(level=[1, 2])
-        d.columns = d.columns.droplevel(0)
-        
-        fig = plt.figure(figsize=(24, 12), dpi=80)
-        ax = fig.add_subplot(111)
-        d.plot(ax =ax, kind='bar', stacked=True, legend=True)
-        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
 
 
 
